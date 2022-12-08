@@ -1,0 +1,9 @@
+# Ignora todos los caches del interprete de python
+
+*.pyc
+
+# Ignora la base de datos de sqlite
+
+*.sqlite
+*.sqlite3
+*.db
