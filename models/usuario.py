@@ -12,8 +12,8 @@ class Usuario:
     """Clase para los usuarios de la aplicación. 
     Contiene los atributos y métodos necesarios para la gestión de los usuarios."""
     
+    # Atributos
     def __init__(self, username, contrasena):
-        # Atributos
         
         # Nombre de usuario
         try:
@@ -55,10 +55,3 @@ class Usuario:
         
     def __str__(self):
         return f"Usuario: {self.username}"
-    
-    
-    
-    
-if __name__ == "__main__":
-    print("Este módulo no puede ser ejecutado directamente.")
-    input("Pulse una tecla para continuar...")
