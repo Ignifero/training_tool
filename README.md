@@ -8,7 +8,7 @@
 2. [Funciones](#funciones)
 3. [Requerimientos](#requerimientos)
 4. [Instalación](#instalación)
-5. [MER](#modelo-entidad-relación)
+5. [MER](https://github.com/Ignifero/training_tool/blob/main/controllers/mere.png)
 6. [Desarrolladores](#desarrolladores)
 7. [Licencia](#licencia)
 
@@ -64,15 +64,11 @@ cd training_tool
 python training_tool.py
 ```
 
-### Modelo entidad relación
-
-![MER](https://raw.githubusercontent.com/Ignifero/training_tool/main/controllers/mere.png?token=GHSAT0AAAAAAB2VW376IGTQYBPCDB4BYIKMY4VR3KA)
-
 ## Desarrolladores
 
 ---
 
-- Juan Peña. Correo: [ju.penag@duocuc.cl](mailto:ju.penag@duocuc.cl).
+* Juan Peña. Correo: [ju.penag@duocuc.cl](mailto:ju.penag@duocuc.cl).
 
 ## Licencia
 
