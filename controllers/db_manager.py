@@ -9,6 +9,7 @@ la consulta de datos, etc."""
 
 import sqlite3
 import os
+import time
 
 
 # Funciones
@@ -24,10 +25,10 @@ def crear_bd():
                 contrasena text not null
             );""")
         print("Tabla USUARIO creada correctamente.")
-        input("Pulse ENTER para continuar...")
+        time.sleep(3)
     except sqlite3.OperationalError:
         print("La tabla USUARIO ya existe.")
-        input("Pulse ENTER para continuar...")
+        time.sleep(3)
     
     # Creación de la tabla ASESORADO
     try:
@@ -43,10 +44,10 @@ def crear_bd():
                 username text references USUARIO(username)
             );""")
         print("Tabla ASESORADO creada correctamente.")
-        input("Pulse ENTER para continuar...")
+        time.sleep(3)
     except sqlite3.OperationalError:
         print("La tabla ASESORADO ya existe.")
-        input("Pulse ENTER para continuar...")
+        time.sleep(3)
         
     # Creación de la tabla ALIMENTO
     try:
@@ -60,19 +61,19 @@ def crear_bd():
                 cantidad_gr float not null
             );""")
         print("Tabla ALIMENTO creada correctamente.")
-        input("Pulse ENTER para continuar...")
+        time.sleep(3)
     except sqlite3.OperationalError:
         print("La tabla ALIMENTO ya existe.")
-        input("Pulse ENTER para continuar...")
+        time.sleep(3)
     
     # Creación índice unico para la tabla ALIMENTO
     try:
         conexion.execute("""create unique index idx_alimento on ALIMENTO(nombre_alimento);""")
         print("Índice único creado correctamente.")
-        input("Pulse ENTER para continuar...")
+        time.sleep(3)
     except sqlite3.OperationalError:
         print("El índice único ya existe.")
-        input("Pulse ENTER para continuar...")
+        time.sleep(3)
         
     # Creación de la tabla FASE_ENTRENAMIENTO
     try:
@@ -81,13 +82,14 @@ def crear_bd():
                 tipo_fase text not null,
                 inicio_fase text not null,
                 fin_fase text,
+                gasto_calorico_objetivo real not null,
                 nombre_asesorado text references ASESORADO(nombre_completo)
             );""")
         print("Tabla FASE_ENTRENAMIENTO creada correctamente.")
-        input("Pulse ENTER para continuar...")
+        time.sleep(3)
     except sqlite3.OperationalError:
         print("La tabla FASE_ENTRENAMIENTO ya existe.")
-        input("Pulse ENTER para continuar...")
+        time.sleep(3)
         
     # Creación de la tabla MENU
     try:
@@ -150,3 +152,66 @@ def validarUsuario(username, contrasena):
     else:
         print("No se ha encontrado la base de datos.")
         return False
+ 
+    
+def nuevoAsesorado(nombre, fecha_n, altura, peso, sexo, somatotipo, p_graso, gasto_e, username):
+    if validar_bd():
+        conexion = sqlite3.connect("training_tool.db")
+        
+        try:
+            conexion.execute("insert into ASESORADO values (?, ?, ?, ?, ?, ?, ?, ?, ?)", 
+                             (nombre, fecha_n, altura, peso, sexo, somatotipo, p_graso, gasto_e, username))
+            
+            print("Asesorado creado correctamente.")
+        except sqlite3.IntegrityError:
+            print("El asesorado ya existe.")
+            
+        conexion.commit()
+        conexion.close()
+    else:
+        print("No se ha encontrado la base de datos.")
+        
+        
+def obtenerAsesorado(username):
+    if validar_bd():
+        conexion = sqlite3.connect("training_tool.db")
+        
+        try:
+            cursor = conexion.execute("select * from ASESORADO where username = ?", (username, ))
+            resultado = cursor.fetchone()
+            
+            if resultado is None:
+                print("No se ha encontrado el asesorado.")
+                conexion.close()
+                return None
+            else:
+                print("Asesorado encontrado.")
+                conexion.close()
+                return resultado
+        except sqlite3.OperationalError:
+            print("No se ha encontrado el asesorado.")
+            conexion.close()
+            return None
+        except sqlite3.IntegrityError:
+            print("No se ha encontrado el asesorado.")
+            conexion.close()
+            return None
+        except sqlite3.ProgrammingError:
+            print("No se ha encontrado el asesorado.")
+            conexion.close()
+            return None
+        
+
+def actualizarAsesorado(nombre, altura, peso, p_graso, gasto_e):
+    if validar_bd():
+        conexion = sqlite3.connect("training_tool.db")
+        
+        try:
+            conexion.execute("update ASESORADO set altura = ?, peso = ?, p_graso = ?, gasto_e = ? where nombre_completo = ?", 
+                             (altura, peso, p_graso, gasto_e, nombre))
+            print("Asesorado actualizado correctamente.")
+            conexion.commit()
+            conexion.close()
+        except sqlite3.OperationalError:
+            print("No se ha encontrado el asesorado.")
+            conexion.close()

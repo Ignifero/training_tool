@@ -19,9 +19,8 @@ class Usuario:
         try:
             if len(username) > 2:
                 if type(username) is str:
-                    if username.isalnum():
-                        if not username.isspace():
-                            self.username = username
+                    if not username.isspace():
+                        self.username = username
             else:
                 raise ValueError
         except ValueError:
