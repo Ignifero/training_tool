@@ -146,4 +146,79 @@ class Asesorado:
     def __str__(self):
         """Método para imprimir los datos de un asesorado."""
         
-        return "Nombre: {}\nFecha de nacimiento: {}\nAltura: {}\nPeso: {}\nSexo: {}\nSomatotipo: {}\nPorcentaje de grasa: {}\nGasto energético basal: {}".format(self.nombre, self.fecha_nacido, self.altura, self.peso, self.sexo, self.somatotipo, self.porcen_graso, self.gasto)
+        return f"""
+    Nombre: {self.nombre.title()}
+    Fecha de nacimiento: {self.fecha_nacido}
+    Sexo: {self.sexo}
+    Altura: {self.altura} cm
+    Peso: {self.peso} kg
+    Somatotipo: {"Ectomorfo" if self.somatotipo == "E" else "Mesomorfo" if self.somatotipo == "M" else "Endomorfo"}
+    Porcentaje de grasa: {self.porcen_graso}%
+    Gasto energético basal: {round(self.gasto, 2)} kcal
+    """
+    
+    def ffmi(self):
+        """Método para calcular el índice de masa muscular libre de grasa."""
+        
+        ffmi = (self.peso * ((100 - self.porcen_graso) / 100)) / ((self.altura / 100) ** 2)
+        
+        if self.sexo == "H":
+            if ffmi < 18:
+                fisico = "pobre"
+            elif ffmi >= 18 and ffmi < 19:
+                fisico = "regular"
+            elif ffmi >= 19 and ffmi < 20:
+                fisico = "normal"
+            elif ffmi >= 20 and ffmi < 21:
+                fisico = "bueno"
+            elif ffmi >= 21 and ffmi < 22.5:
+                fisico = "muy bueno"
+            elif ffmi >= 22.5 and ffmi < 24:
+                fisico = "excelente"
+            elif ffmi >= 24 and ffmi < 26:
+                fisico = "totalmente desarrollado. ¡Enhorabuena! ¡Haz alcanzado el máximo!"
+            else:
+                fisico = "excesivamente desarrollado. ¿Estás seguro de que no estás tomando esteroides?"
+        else:
+            if ffmi < 13.5:
+                fisico = "pobre"
+            elif ffmi >= 13.5 and ffmi < 14.5:
+                fisico = "regular"
+            elif ffmi >= 14.5 and ffmi < 16:
+                fisico = "normal"
+            elif ffmi >= 16 and ffmi < 17:
+                fisico = "bueno"
+            elif ffmi >= 17 and ffmi < 18.5:
+                fisico = "muy bueno"
+            elif ffmi >= 18.5 and ffmi < 20.5:
+                fisico = "excelente"
+            elif ffmi >= 20.5 and ffmi < 22:
+                fisico = "totalmente desarrollado. ¡Enhorabuena! ¡Haz alcanzado el máximo!"
+            else:
+                fisico = "excesivamente desarrollado. ¿Estás seguro de que no estás tomando esteroides?"
+        
+        return f"""Nivel de desarrollo corporal:
+    
+    El índice de masa muscular es de {round(ffmi, 2)}. Esto indica que posee nivel físico {fisico}. Puedes
+    ver la tabla de referencia abajo para saber qué significa cada nivel:
+    
+   --------------------------------------------------------
+   |  HOMBRES   |       FORMA FÍSICA        |   MUJERES   |
+   --------------------------------------------------------
+   | 18 o menos |           pobre           | 13.5 o menos|
+   --------------------------------------------------------
+   |  18 - 19   |          regular          | 13.5 - 14.5 |
+   --------------------------------------------------------
+   |  19 - 20   |           normal          | 14.5 - 16   |
+   --------------------------------------------------------
+   |  20 - 21   |           bueno           | 16 - 17     |
+   --------------------------------------------------------
+   |  21 - 22.5 |         muy bueno         | 17 - 18.5   |
+   --------------------------------------------------------
+   |  22.5 - 24 |         excelente         | 18.5 - 20.5 |
+   --------------------------------------------------------
+   |  24 - 26   |           Máximo          | 20.5 - 22   |
+   --------------------------------------------------------
+   | más de 26  | Posible uso de esteroides | más de 22   |
+   --------------------------------------------------------
+    """

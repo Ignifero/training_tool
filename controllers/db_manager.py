@@ -10,13 +10,16 @@ la consulta de datos, etc."""
 import sqlite3
 import os
 import time
+from controllers import cls
 
 
 # Funciones
 
 def crear_bd():
     conexion = sqlite3.connect("training_tool.db")
+    cls()
     print("Creando base de datos...")
+    time.sleep(2)
     
     # Creación de la tabla USUARIO
     try:
@@ -25,10 +28,10 @@ def crear_bd():
                 contrasena text not null
             );""")
         print("Tabla USUARIO creada correctamente.")
-        time.sleep(3)
+        time.sleep(2)
     except sqlite3.OperationalError:
         print("La tabla USUARIO ya existe.")
-        time.sleep(3)
+        time.sleep(2)
     
     # Creación de la tabla ASESORADO
     try:
@@ -44,10 +47,10 @@ def crear_bd():
                 username text references USUARIO(username)
             );""")
         print("Tabla ASESORADO creada correctamente.")
-        time.sleep(3)
+        time.sleep(2)
     except sqlite3.OperationalError:
         print("La tabla ASESORADO ya existe.")
-        time.sleep(3)
+        time.sleep(2)
         
     # Creación de la tabla ALIMENTO
     try:
@@ -61,19 +64,19 @@ def crear_bd():
                 cantidad_gr float not null
             );""")
         print("Tabla ALIMENTO creada correctamente.")
-        time.sleep(3)
+        time.sleep(2)
     except sqlite3.OperationalError:
         print("La tabla ALIMENTO ya existe.")
-        time.sleep(3)
+        time.sleep(2)
     
     # Creación índice unico para la tabla ALIMENTO
     try:
         conexion.execute("""create unique index idx_alimento on ALIMENTO(nombre_alimento);""")
         print("Índice único creado correctamente.")
-        time.sleep(3)
+        time.sleep(2)
     except sqlite3.OperationalError:
         print("El índice único ya existe.")
-        time.sleep(3)
+        time.sleep(2)
         
     # Creación de la tabla FASE_ENTRENAMIENTO
     try:
@@ -83,28 +86,72 @@ def crear_bd():
                 inicio_fase text not null,
                 fin_fase text,
                 gasto_calorico_objetivo real not null,
+                proteinas_gr_dia real not null,
+                grasas_gr_dia real not null,
+                carbohidratos_gr_dia real not null,
+                nro_comidas_dia integer not null,
                 nombre_asesorado text references ASESORADO(nombre_completo)
             );""")
         print("Tabla FASE_ENTRENAMIENTO creada correctamente.")
-        time.sleep(3)
+        time.sleep(2)
     except sqlite3.OperationalError:
         print("La tabla FASE_ENTRENAMIENTO ya existe.")
-        time.sleep(3)
+        time.sleep(2)
+        
+    # Creación de la tabla TIPO_MENU
+    try:
+        conexion.execute("""create table TIPO_MENU(
+                    id_tipo integer primary key autoincrement,
+                    nombre_tipo text not null
+                );""")
+        print("Tabla TIPO_MENU creada correctamente.")
+        time.sleep(2)
+    except sqlite3.OperationalError:
+        print("La tabla TIPO_MENU ya existe.")
+        time.sleep(2)
         
     # Creación de la tabla MENU
     try:
         conexion.execute("""create table MENU(
-                id_menu integer primary key autoincrement,
-                fecha_creacion text not null,
-                racion_alimento real not null,
-                nombre_asesorado text references ASESORADO(nombre_completo),
-                id_alimento integer references ALIMENTO(id_alimento)
-            );""")
+                    id_menu integer primary key autoincrement,
+                    fecha_creacion text not null,
+                    id_tipo integer references TIPO_MENU(id_tipo),
+                    nombre_asesorado text references ASESORADO(nombre_completo),
+                    id_fase integer references FASE_ENTRENAMIENTO(id_fase)
+                );""")
         print("Tabla MENU creada correctamente.")
-        print("\nBase de datos creada.")
-        input("Pulse ENTER para continuar...")
+        time.sleep(2)
     except sqlite3.OperationalError:
         print("La tabla MENU ya existe.")
+        print("\nBase de datos creada.")
+        input("Pulse ENTER para continuar...")
+        
+    # Creación de la tabla INGREDIENTE
+    try:
+        conexion.execute("""create table INGREDIENTE(
+                nro_ingrediente integer primary key autoincrement,
+                id_alimento integer references ALIMENTO(id_alimento),
+                id_menu integer references MENU(id_menu),
+                cantidad_gr float not null
+            );""")
+        print("Tabla INGREDIENTE creada correctamente.")
+        time.sleep(2)
+    except sqlite3.OperationalError:
+        print("La tabla INGREDIENTE ya existe.")
+        time.sleep(2)
+        
+    # Insert de datos unicos en tipo_menus
+    try:
+        conexion.execute("""insert into TIPO_MENU(nombre_tipo) values ('Desayuno');""")
+        conexion.execute("""insert into TIPO_MENU(nombre_tipo) values ('Almuerzo');""")
+        conexion.execute("""insert into TIPO_MENU(nombre_tipo) values ('Snack');""")
+        conexion.execute("""insert into TIPO_MENU(nombre_tipo) values ('Merienda');""")
+        conexion.execute("""insert into TIPO_MENU(nombre_tipo) values ('Cena');""")
+        print("Datos insertados en la tabla TIPO_MENU correctamente.")
+        time.sleep(2)
+    except sqlite3.IntegrityError:
+        print("Los datos ya existen en la tabla TIPO_MENU.")
+        time.sleep(2)
         print("\nBase de datos creada.")
         input("Pulse ENTER para continuar...")
     
@@ -215,3 +262,69 @@ def actualizarAsesorado(nombre, altura, peso, p_graso, gasto_e):
         except sqlite3.OperationalError:
             print("No se ha encontrado el asesorado.")
             conexion.close()
+            
+
+def nuevaFase(tipo, fecha_inicio, gasto_total, protes, grasas, carbos, comidas, asesorado):
+    if validar_bd():
+        conexion = sqlite3.connect("training_tool.db")
+        
+        try:
+            conexion.execute("""insert into FASE_ENTRENAMIENTO(tipo_fase,
+                             inicio_fase, gasto_calorico_objetivo, proteinas_gr_dia, grasas_gr_dia,
+                             carbohidratos_gr_dia, nro_comidas_dia, nombre_asesorado) values (?, ?, ?, ?, ?, ?, ?, ?);""",
+                             (tipo, fecha_inicio, gasto_total, protes, grasas, carbos, comidas, asesorado))
+            print("Fase creada correctamente.")
+            conexion.commit()
+            conexion.close()
+        except sqlite3.IntegrityError:
+            print("El asesorado ya existe.")
+            conexion.close()
+        
+            
+def obtenerFase(asesorado):
+    if validar_bd():
+        conexion = sqlite3.connect("training_tool.db")
+        
+        try:
+            cursor = conexion.execute("""select tipo_fase, inicio_fase, gasto_calorico_objetivo, fin_fase, 
+                                        proteinas_gr_dia, grasas_gr_dia, carbohidratos_gr_dia, nro_comidas_dia
+                                        from FASE_ENTRENAMIENTO
+                                        where nombre_asesorado = ?;""",
+                                        (asesorado, ))
+            buscar = cursor.fetchall()
+            resultado = buscar[len(buscar) - 1]
+            
+            if resultado is None:
+                print("No se ha encontrado la fase.")
+                conexion.close()
+                return None
+            else:
+                print("Fase encontrada.")
+                conexion.close()
+                return resultado
+        except sqlite3.OperationalError:
+            print("No se ha encontrado la fase.")
+            conexion.close()
+            return None
+        except sqlite3.IntegrityError:
+            print("No se ha encontrado la fase.")
+            conexion.close()
+            return None
+        except sqlite3.ProgrammingError:
+            print("No se ha encontrado la fase.")
+            conexion.close()
+            return None
+    
+
+def actualizarFase(fecha_fin, asesorado):
+    conexion = sqlite3.connect("training_tool.db")
+    
+    try:
+        conexion.execute("""update FASE_ENTRENAMIENTO set fin_fase = ? where nombre_asesorado = ? and fin_fase is null""",
+                         (fecha_fin, asesorado))
+        print("Fase actualizada correctamente.")
+        conexion.commit()
+        conexion.close()
+    except sqlite3.OperationalError:
+        print("No se ha encontrado la fase.")
+        conexion.close()

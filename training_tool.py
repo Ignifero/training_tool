@@ -6,9 +6,11 @@
 import os
 import cv2
 import datetime
+from models import fase_entrenamiento
 from models import usuario
 from models import asesorado
 from controllers import db_manager
+from controllers import cls
 
 # Funciones
 
@@ -40,7 +42,7 @@ def main():
     if not db_manager.validar_bd():
         db_manager.crear_bd()
     while True:
-        os.system("cls")
+        cls()
         banner()
         menu()
         opcion = input("Elija una opción: ")
@@ -98,7 +100,7 @@ def menu_principal():
     if consulta == None:
         print("\nNo hay asesorados registrados.")
         input("Pulse ENTER para continuar...")
-        os.system("cls")
+        cls()
         print("REGISTRO DE ASESORADO\n")
         while True:
             nombre = input("\nIngrese nombre completo: ")
@@ -146,6 +148,12 @@ def menu_principal():
                 print("Opción incorrecta. Use H o M.")
                 input("Pulse ENTER para continuar...")
         while True:
+            print("""Tipo de cuerpo o somatotipo:
+    - Ectomorfo: por lo general, son delgados y tienen poca masa muscular. Tienen dificultades para ganar peso y masa muscular.
+    - Mesomorfo: tienen facilidad para ganar peso o adelgazar. Tienen siempre los hombros más anchos que las caderas.
+    - Hendomorfo: son personas con un cuerpo más redondo y con más grasa corporal. Tienen mucha facilidad para ganar peso y 
+        masa muscular, pero les cuesta perder peso.
+        """)
             somatotipo = input("Ingrese somatotipo (E para Ectomorfo, M para Mesomorfo o H para Endomorfo): ")
             if somatotipo.upper() == "E" or somatotipo.upper() == "M" or somatotipo.upper() == "H":
                 break
@@ -186,7 +194,7 @@ Escoja el porcentaje de grasa corporal que más se asemeje a usted.
             asesorado_activo.registrar()
             print("\nRegistro de asesorado correcto.")
             input("Pulse ENTER para continuar...")
-            menu_principal()
+            nuevoObjetivo('principal')
         except:
             print("\nError al crear asesorado.")
             input("Pulse ENTER para continuar...")
@@ -195,29 +203,30 @@ Escoja el porcentaje de grasa corporal que más se asemeje a usted.
         asesorado_activo = asesorado.Asesorado(consulta[0], consulta[1], consulta[2], consulta[3], consulta[4],
                                             consulta[5], consulta[6], consulta[7])
     while True:
-        os.system("cls")
+        cls()
         banner()
-        print(f"""   Bienvenido, {usuario_activo.capitalize()}
+        print(f"""   Bienvenido, {usuario_activo.title()}
             
-            1. Gasto Energético
-            2. Macronutrientes
-            3. Progreso de {usuario_activo.capitalize()}
-            4. Comida
+            1. Gasto Energético y Objetivos
+            2. Rutinas de entrenamiento
+            3. Progreso de {usuario_activo.title()}
+            4. Comidas
             5. Cerrar sesión
             """)
         opcion = input("Elija una opción: ")
         if opcion == "1":
-            print("\nGasto energético")
-            input("Pulse ENTER para continuar...")
+            menuObjetivos()
         elif opcion == "2":
-            print("\nMacronutrientes")
+            print("\nRutinas de entrenamiento (en desarrollo)")
             input("Pulse ENTER para continuar...")
         elif opcion == "3":
+            cls()
             print("\nProgreso de", usuario_activo)
             print("\n", asesorado_activo)
+            print("\n", asesorado_activo.ffmi())
             input("Pulse ENTER para continuar...")
         elif opcion == "4":
-            print("\nComida")
+            print("\nComidas (en desarrollo)")
             input("Pulse ENTER para continuar...")
         elif opcion == "5":
             print("\nCerrando sesión...")
@@ -227,6 +236,162 @@ Escoja el porcentaje de grasa corporal que más se asemeje a usted.
         else:
             print("Opción incorrecta. Use los números del 1 al 5.")
             input("Pulse ENTER para continuar...")
+            
+def menuObjetivos():
+    while True:
+        cls()
+        print("""GASTO ENERGÉTICO Y OBJETIVOS
+
+
+        1. Ver objetivo actual
+        2. Fijar nuevo objetivo
+        3. Volver al menú principal
+            """)
+        opcion = input("Elija una opción: ")
+        if opcion == "1":
+            cls()
+            try:
+                busqueda = db_manager.obtenerFase(asesorado_activo.nombre)
+                objetivo = fase_entrenamiento.FaseEntrenamiento(busqueda[0], busqueda[1], busqueda[2], 
+                                                                asesorado_activo.nombre, busqueda[4], busqueda[5],
+                                                                busqueda[6], busqueda[7], busqueda[3])
+                print(objetivo)
+                input("\nPulse ENTER para continuar...")
+                menuObjetivos()
+            except:
+                print("No se ha fijado ningún objetivo.")
+                input("Pulse ENTER para continuar...")
+                menuObjetivos()
+        elif opcion == "2":
+            nuevoObjetivo('objetivo')            
+        elif opcion == "3":
+            menu_principal()
+        else:
+            print("\nOpción incorrecta. Use los números del 1 al 3.")
+            input("Pulse ENTER para continuar...")
+            menuObjetivos()
+            
+            
+def nuevoObjetivo(menu):
+    while True:
+        cls()
+        print("""FIJAR NUEVO OBJETIVO
+        
+        Tipo de objetivo:
+        1. Mantener peso (no perder ni ganar peso; si tienes sobrepeso, perderás grasa lentamente)
+        2. Disminuir grasa corporal
+        3. Aumentar masa muscular
+            """)
+        objetivo = input("Elija una opción: ")
+        if objetivo == "1":
+            fase = "mantenimiento"
+            protes = 2.2 * asesorado_activo.peso
+            grasa = 0.1 * asesorado_activo.peso
+            break
+        elif objetivo == "2":
+            fase = "definicion"
+            protes = 1.8 * asesorado_activo.peso
+            grasa = 0.5 * asesorado_activo.peso
+            break
+        elif objetivo == "3":
+            fase = "volumen"
+            protes = 2.5 * asesorado_activo.peso
+            grasa = 1.5 * asesorado_activo.peso
+            break
+        else:
+            print("Opción incorrecta. Use los números del 1 al 3.")
+            input("Pulse ENTER para continuar...")
+    while True:
+        cls()
+        print("""FIJAR NUEVO OBJETIVO
+        
+        Actividad física semanal para el objetivo (ejercicio de pesas, danza, deporte y similares):
+        
+        1. Poco o nada en la semana (0-1 días)
+        2. Actvidad física ligera (2-3 días)
+        3. Actividad física moderada (4-5 días)
+        4. Actividad física intensa (6-7 días)
+        5. Actividad física muy intensa (entrenamiento de fuerza 2 veces al día, deporte profesional, etc.)
+            """)
+        opcion = input("Elija una opción: ")
+        if opcion == "1":
+            actividad = 1.2
+            break
+        elif opcion == "2":
+            actividad = 1.375
+            break
+        elif opcion == "3":
+            actividad = 1.55
+            break
+        elif opcion == "4":
+            actividad = 1.725
+            break
+        elif opcion == "5":
+            actividad = 1.9
+            break
+        else:
+            print("Opción incorrecta. Use los números del 1 al 5.")
+            input("Pulse ENTER para continuar...")
+            
+    while True:
+        cls()
+        print("""FIJAR NUEVO OBJETIVO
+        
+        Ingrese cuántas comidas consumirá al día (2-5). Recuerde que a menor cantidad de comidas, 
+        mayor será la cantidad de alimentos que deberá consumir en cada una de ellas.
+              """)
+        comidas = input("Ingrese el número de comidas: ")
+        if comidas.isdigit():
+            comidas = int(comidas)
+            if comidas < 2 or comidas > 5:
+                print("El número de comidas debe estar entre 2 y 5.")
+                input("Pulse ENTER para continuar...")
+            else:
+                break
+        else:
+            print("Debe ingresar un número.")
+            input("Pulse ENTER para continuar...")
+    try:
+        g_total = asesorado_activo.gasto * actividad
+        if fase == 'mantenimiento':
+            g_fase = g_total
+        elif fase == 'definicion':
+            if asesorado_activo.somatotipo == 'E':
+                g_fase = g_total * 0.9
+            elif asesorado_activo.somatotipo == 'M':
+                g_fase = g_total * 0.80
+            else:
+                g_fase = g_total * 0.70
+        else:
+            if asesorado_activo.somatotipo == 'E':
+                g_fase = g_total * 1.2
+            elif asesorado_activo.somatotipo == 'M':
+                g_fase = g_total * 1.15
+            else:
+                g_fase = g_total * 1.10
+                
+        macros = g_fase - (protes * 4 + grasa * 9)
+        carbos = macros / 4
+        
+        f_entrenamiento = fase_entrenamiento.FaseEntrenamiento(fase, "", g_fase, asesorado_activo.nombre, protes,
+                                                               grasa, carbos, comidas)
+        f_entrenamiento.iniciarFase()
+        cls()
+        print("Objetivo fijado correctamente.")
+        input("Pulse ENTER para continuar...")
+        
+        if menu == 'objetivo':
+            menuObjetivos()
+        elif menu == 'principal':
+            menu_principal()
+        else:
+            print("Error al fijar objetivo.")
+            input("Pulse ENTER para continuar...")
+            menu_principal()
+    except:
+        print("Error al fijar objetivo.")
+        input("Pulse ENTER para continuar...")
+        menu_principal()        
         
 
 

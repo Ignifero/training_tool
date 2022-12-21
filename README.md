@@ -9,8 +9,9 @@
 3. [Requerimientos](#requerimientos)
 4. [Instalación](#instalación)
 5. [MER](https://github.com/Ignifero/training_tool/blob/main/controllers/mere.png)
-6. [Desarrolladores](#desarrolladores)
-7. [Licencia](#licencia)
+6. [Releases](https://github.com/Ignifero/training_tool/blob/main/CHANGELOG.md)
+7. [Desarrolladores](#desarrolladores)
+8. [Licencia](#licencia)
 
 ## Introducción
 

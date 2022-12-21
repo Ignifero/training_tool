@@ -7,3 +7,6 @@
 *.sqlite
 *.sqlite3
 *.db
+
+# Ignora los apunte sobre nutricion
+notas.txt
