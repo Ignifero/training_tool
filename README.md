@@ -76,3 +76,5 @@ python training_tool.py
 ---
 
 [GPL-3.0 license](https://www.gnu.org/licenses/)
+
+[Saludable iconos creados por monkik - Flaticon](https://www.flaticon.es/iconos-gratis/saludable)
