@@ -9,7 +9,6 @@ la consulta de datos, etc."""
 
 import sqlite3
 import os
-import time
 from controllers import cls
 
 
@@ -135,6 +134,7 @@ def crear_bd():
         CONEXION.execute("""insert into TIPO_MENU(nombre_tipo) values ('Merienda');""")
         CONEXION.execute("""insert into TIPO_MENU(nombre_tipo) values ('Cena');""")
         print("Datos insertados en la tabla TIPO_MENU correctamente.")
+        print("\nBase de datos creada.")
     except sqlite3.IntegrityError:
         print("Los datos ya existen en la tabla TIPO_MENU.")
         
