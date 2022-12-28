@@ -1,4 +1,4 @@
-#!user/bin/env python
+
 """Archivo principal de la aplicación. Contiene el menú principal y el bucle principal de la aplicación.
 Esta es su versión de consola."""
 

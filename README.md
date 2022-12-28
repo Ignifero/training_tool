@@ -63,6 +63,7 @@ Para instalar la aplicación, solo se debe clonar el repositorio.
 ``` bash
 git clone https://github.com/Ignifero/training_tool.git
 cd training_tool
+pip install -r requirements.txt
 python training_tool.py
 ```
 
