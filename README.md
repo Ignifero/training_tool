@@ -4,7 +4,7 @@
 
 ---
 
-0. [Changelog](https://github.com/Ignifero/training_tool/blob/main/changelog.md)
+0. [Changelog](https://github.com/Ignifero/training_tool/blob/main/CHANGELOG.md)
 1. [Introducción](#introducción)
 2. [Funciones](#funciones)
 3. [Requerimientos](#requerimientos)
