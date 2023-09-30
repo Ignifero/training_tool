@@ -11,3 +11,5 @@ import os
 def cls():
     """Función para limpiar la pantalla. Se usa para mejorar la experiencia de usuario."""
     os.system("cls" if os.name == "nt" else "clear")
+
+    

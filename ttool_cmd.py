@@ -288,7 +288,7 @@ def nuevoObjetivo(menu):
         if objetivo == "1":
             fase = "mantenimiento"
             protes = 2.2 * asesorado_activo.peso
-            grasa = 0.1 * asesorado_activo.peso
+            grasa = 10 * asesorado_activo.peso
             break
         elif objetivo == "2":
             fase = "definicion"

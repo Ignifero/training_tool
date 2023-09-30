@@ -158,6 +158,46 @@ class Asesorado:
     """
     
     def ffmi(self):
+        ffmi = (self.peso * ((100 - self.porcen_graso) / 100)) / ((self.altura / 100) ** 2)
+        
+        if self.sexo == "H":
+            if ffmi < 18:
+                fisico = "pobre"
+            elif ffmi >= 18 and ffmi < 19:
+                fisico = "regular"
+            elif ffmi >= 19 and ffmi < 20:
+                fisico = "normal"
+            elif ffmi >= 20 and ffmi < 21:
+                fisico = "bueno"
+            elif ffmi >= 21 and ffmi < 22.5:
+                fisico = "muy bueno"
+            elif ffmi >= 22.5 and ffmi < 24:
+                fisico = "excelente"
+            elif ffmi >= 24 and ffmi < 26:
+                fisico = "totalmente desarrollado. ¡Enhorabuena! ¡Haz alcanzado el máximo!"
+            else:
+                fisico = "excesivamente desarrollado. ¿Estás seguro de que no estás tomando esteroides?"
+        else:
+            if ffmi < 13.5:
+                fisico = "pobre"
+            elif ffmi >= 13.5 and ffmi < 14.5:
+                fisico = "regular"
+            elif ffmi >= 14.5 and ffmi < 16:
+                fisico = "normal"
+            elif ffmi >= 16 and ffmi < 17:
+                fisico = "bueno"
+            elif ffmi >= 17 and ffmi < 18.5:
+                fisico = "muy bueno"
+            elif ffmi >= 18.5 and ffmi < 20.5:
+                fisico = "excelente"
+            elif ffmi >= 20.5 and ffmi < 22:
+                fisico = "totalmente desarrollado. ¡Enhorabuena! ¡Haz alcanzado el máximo!"
+            else:
+                fisico = "excesivamente desarrollado. ¿Estás seguro de que no estás tomando esteroides?"
+        
+        return round(ffmi, 1), fisico;
+
+    def ffmi_text(self):
         """Método para calcular el índice de masa muscular libre de grasa."""
         
         ffmi = (self.peso * ((100 - self.porcen_graso) / 100)) / ((self.altura / 100) ** 2)
@@ -179,7 +219,7 @@ class Asesorado:
                 fisico = "totalmente desarrollado. ¡Enhorabuena! ¡Haz alcanzado el máximo!"
             else:
                 fisico = "excesivamente desarrollado. ¿Estás seguro de que no estás tomando esteroides?"
-        else:
+        elif self.sexo == "M":
             if ffmi < 13.5:
                 fisico = "pobre"
             elif ffmi >= 13.5 and ffmi < 14.5:

@@ -231,6 +231,36 @@ def obtenerAsesorado(username):
             print("No se ha encontrado el asesorado.")
             CONEXION.close()
             return None
+
+
+def validarAsesorado(usuario):
+    if validar_bd():
+        CONEXION = sqlite3.connect(os.path.join(APPDATA, "training_tool", "training_tool.db")) 
+        
+        try:
+            cursor = CONEXION.execute("select * from ASESORADO where username = ?", (usuario, ))
+            resultado = cursor.fetchone()
+            
+            if resultado is None:
+                print("No se ha encontrado el asesorado.")
+                CONEXION.close()
+                return False
+            else:
+                print("Asesorado encontrado.")
+                CONEXION.close()
+                return True
+        except sqlite3.OperationalError:
+            print("No se ha encontrado el asesorado.")
+            CONEXION.close()
+            return False
+        except sqlite3.IntegrityError:
+            print("No se ha encontrado el asesorado.")
+            CONEXION.close()
+            return False
+        except sqlite3.ProgrammingError:
+            print("No se ha encontrado el asesorado.")
+            CONEXION.close()
+            return False
         
 
 def actualizarAsesorado(nombre, altura, peso, p_graso, gasto_e):
@@ -243,8 +273,8 @@ def actualizarAsesorado(nombre, altura, peso, p_graso, gasto_e):
             print("Asesorado actualizado correctamente.")
             CONEXION.commit()
             CONEXION.close()
-        except sqlite3.OperationalError:
-            print("No se ha encontrado el asesorado.")
+        except sqlite3.OperationalError as e:
+            print("No se ha encontrado el asesorado. " + str(e))
             CONEXION.close()
             
 

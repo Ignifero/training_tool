@@ -10,3 +10,6 @@
 
 # Ignora los apunte sobre nutricion
 notas.txt
+
+# Ignora la carpeta con el .exe de la aplicacion
+output/
