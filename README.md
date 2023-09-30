@@ -67,11 +67,12 @@ pip install -r requirements.txt
 python training_tool.py
 ```
 
-## Desarrolladores
+## Equipo de Desarrollo
 
 ---
 
 * Juan Peña. Correo: [ju.penag@duocuc.cl](mailto:ju.penag@duocuc.cl).
+* Marcos Olmedo. Correo [ma.olmedo@duocuc.cl](mailto:ma.olmedo@duocuc.cl)
 
 ## Licencia
 
