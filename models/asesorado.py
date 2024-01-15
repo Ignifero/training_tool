@@ -7,6 +7,10 @@ from datetime import date
 from datetime import datetime
 from controllers import db_manager
 
+# Constantes
+
+DATE_FORMAT = "%d/%m/%Y"
+
 # Clase
 
 class Asesorado:
@@ -14,84 +18,73 @@ class Asesorado:
     Contiene los atributos y métodos necesarios para la gestión de los asesorados."""
     
     def __init__(self, nombre, fecha_nacido, altura, peso, sexo, somatotipo, porcen_graso, user):
-        
-        # Nombre
+        self.nombre = self.validar_nombre(nombre)
+        self.fecha_nacido = self.validar_fecha_nacimiento(fecha_nacido)
+        self.altura = self.validar_altura(altura)
+        self.peso = self.validar_peso(peso)
+        self.sexo = self.validar_sexo(sexo)
+        self.somatotipo = self.validar_somatotipo(somatotipo)
+        self.porcen_graso = self.validar_porcentaje_grasa(porcen_graso)
+        self.gasto = self.calcular_gasto_energetico(fecha_nacido, sexo, peso, altura)
+        self.user = user
+
+    def validar_nombre(self, nombre):
+        if len(nombre) > 11 and isinstance(nombre, str) and not nombre.isspace() and not any(char.isdigit() for char in nombre):
+            return nombre
+        else:
+            raise ValueError("El nombre debe tener al menos 12 caracteres. Escriba su nombre completo.")
+
+    def validar_fecha_nacimiento(self, fecha_nacido):
         try:
-            if len(nombre) > 11:
-                if type(nombre) is str:
-                    if not nombre.isspace():
-                        if "0" or "1" or "2" or "3" or "4" or "5" or "6" or "7" or "8" or "9" not in nombre:
-                            self.nombre = nombre
-            else:
-                raise ValueError
+            return datetime.strptime(fecha_nacido, DATE_FORMAT)
         except ValueError:
-            print("El nombre debe tener al menos 12 caracteres. Escriba su nombre completo.")
-            
-        # Fecha de nacimiento
-        try:
-            _fecha = datetime.strptime(fecha_nacido, "%d/%m/%Y")
-            self.fecha_nacido = fecha_nacido
-        except ValueError:
-            print("La fecha de nacimiento no es válida.")
-        
-        # Altura
+            raise ValueError("La fecha de nacimiento no es válida.")
+
+    def validar_altura(self, altura):
         try:
             if int(altura) < 300:
-                self.altura = int(altura)
+                return int(altura)
             else:
                 raise ValueError
         except ValueError:
-            print("La altura debe ser un número entero. Se guardarán los centímetros, no metros.")
-            
-        # Peso
+            raise ValueError("La altura debe ser un número entero. Se guardarán los centímetros, no metros.")
+
+    def validar_peso(self, peso):
         try:
             if float(peso) < 200:
-                self.peso = float(peso)
+                return float(peso)
             else:
                 raise ValueError
         except ValueError:
-            print("El peso debe ser un número. Se guardarán los kilogramos menores a 200kg.")
-            
-        # Sexo
-        try:
-            if sexo.upper() == "H" or sexo.upper() == "M":
-                self.sexo = sexo.upper()
-            else:
-                raise ValueError
-        except ValueError:
-            print("El sexo debe ser H para hombre o M para mujer.")
-            
-        # Somatotipo
-        try:
-            if somatotipo.upper() == "E" or somatotipo.upper() == "M" or somatotipo.upper() == "H":
-                self.somatotipo = somatotipo.upper()
-            else:
-                raise ValueError
-        except ValueError:
-            print("El somatotipo debe ser E para ectomorfo, M para mesomorfo o H para endomorfo.")
-            
-        # Porcentaje de grasa
+            raise ValueError("El peso debe ser un número. Se guardarán los kilogramos menores a 200kg.")
+
+    def validar_sexo(self, sexo):
+        if sexo.upper() == "H" or sexo.upper() == "M":
+            return sexo.upper()
+        else:
+            raise ValueError("El sexo debe ser H para hombre o M para mujer.")
+
+    def validar_somatotipo(self, somatotipo):
+        if somatotipo.upper() == "E" or somatotipo.upper() == "M" or somatotipo.upper() == "H":
+            return somatotipo.upper()
+        else:
+            raise ValueError("El somatotipo debe ser E para ectomorfo, M para mesomorfo o H para endomorfo.")
+
+    def validar_porcentaje_grasa(self, porcen_graso):
         try:
             if float(porcen_graso) < 60 and float(porcen_graso) > 0:
-                self.porcen_graso = float(porcen_graso)
+                return float(porcen_graso)
             else:
                 raise ValueError
         except ValueError:
-            print("El porcentaje de grasa debe ser un número entre 0 y 60.")
-            
-        # Gasto energético basal
-        edad = date.today().year - datetime.strptime(fecha_nacido, "%d/%m/%Y").year
-        
-        if self.sexo == "H":
-            tmb = 66.5 + 13.8 * self.peso + 5 * self.altura - 6.8 * edad
-            self.gasto = tmb
+            raise ValueError("El porcentaje de grasa debe ser un número entre 0 y 60.")
+
+    def calcular_gasto_energetico(self, fecha_nacido, sexo, peso, altura):
+        edad = date.today().year - datetime.strptime(fecha_nacido, DATE_FORMAT).year
+        if sexo == "H":
+            return 66.5 + 13.8 * peso + 5 * altura - 6.8 * edad
         else:
-            tmb = 655.1 + 9.6 * self.peso + 1.8 * self.altura - 4.7 * edad
-            self.gasto = tmb
-            
-        # Usuario
-        
-        self.user = user
+            return 655.1 + 9.6 * peso + 1.8 * altura - 4.7 * edad
             
             
     def registrar(self):
@@ -132,7 +125,7 @@ class Asesorado:
             print("El porcentaje de grasa debe ser un número entre 0 y 60.")
             
         # Gasto energético basal
-        edad = date.today().year - datetime.strptime(self.fecha_nacido, "%d/%m/%Y").year
+        edad = date.today().year - datetime.strptime(self.fecha_nacido, DATE_FORMAT).year
         
         if self.sexo == "H":
             tmb = 66.5 + (13.8 * peso) + (5 * altura) - (6.8 * edad)
@@ -146,13 +139,21 @@ class Asesorado:
     def __str__(self):
         """Método para imprimir los datos de un asesorado."""
         
+        somatotipo_str = ""
+        if self.somatotipo == "E":
+            somatotipo_str = "Ectomorfo"
+        elif self.somatotipo == "M":
+            somatotipo_str = "Mesomorfo"
+        else:
+            somatotipo_str = "Endomorfo"
+        
         return f"""
     Nombre: {self.nombre.title()}
     Fecha de nacimiento: {self.fecha_nacido}
     Sexo: {self.sexo}
     Altura: {self.altura} cm
     Peso: {self.peso} kg
-    Somatotipo: {"Ectomorfo" if self.somatotipo == "E" else "Mesomorfo" if self.somatotipo == "M" else "Endomorfo"}
+    Somatotipo: {somatotipo_str}
     Porcentaje de grasa: {self.porcen_graso}%
     Gasto energético basal: {round(self.gasto, 2)} kcal
     """

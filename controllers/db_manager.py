@@ -53,13 +53,16 @@ def crear_bd():
     # Creación de la tabla ALIMENTO
     try:
         CONEXION.execute("""create table ALIMENTO(
-                id_alimento integer primary key,
+                nro_alimento integer primary key autoincrement,
+                codigo_barras text,
                 nombre_alimento text not null,
                 calorias float not null,
                 proteinas float not null,
                 grasas float not null,
                 carbohidratos float not null,
-                cantidad_gr float not null
+                gr_envase float not null,
+                cm3_envase float not null,
+                cant_envases float not null
             );""")
         print("Tabla ALIMENTO creada correctamente.")
     except sqlite3.OperationalError:

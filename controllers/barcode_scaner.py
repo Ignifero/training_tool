@@ -9,7 +9,7 @@ from pyzbar.pyzbar import decode
 # Definición de funciones
 
 def barcode_scaner():
-    """Función para escanear códigos de barras.
+    """Función para escanear códigos de barras. Devuelve el código de barras leído.
     
     Todo el código de esta función fue hecho por la IA ChatGPT-3."""
     # Inicializa la cámara
